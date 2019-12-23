@@ -85,7 +85,7 @@
                        
                     <tr>
                       <td><?php echo $no ?></td>
-                      <td><?php echo $item["options"]["nama"] ?></td>
+                      <td><?php echo $item["options"]["nama_customer"] ?></td>
                       <td><?php echo $item["name"] ?></td>
                       <td><?php echo number_format ($item["price"]) ?></td>
                       <td><?php echo $item["qty"] ?></td>
@@ -101,7 +101,7 @@
 
                     <?php 
                     $no++;
-                    $id_customer =  $item["options"]["id_customer"];
+                    //$id_customer =  $item["options"]["id_customer"];
                     endforeach; ?>
                     <tr>
                       <td colspan="6" style="text-align: center">
@@ -110,9 +110,7 @@
                       <td>
                         <form method="post" action="<?php echo base_url("index/proses_penjualan") ?>">
                           <input type="hidden" name="id_toko" value="<?php echo $this->session->userdata("id") ?>">
-                          <?php if(isset($id_customer)){ ?>
-                          <input type="hidden" name="id_customer" value="<?php echo $id_customer ?>">
-                          <?php } ?>
+                          <input type="hidden" name="id_customer" value="<?php echo $this->session->userdata('nama_customer') ?>">
                           <button type="submit" class="btn btn-gradient-primary mr-2">order</button>
                         </form>
                       </td>
@@ -124,15 +122,17 @@
           </div>
 
            <div class="row">
-            <div class="col-md-8 grid-margin stretch-card">
+            <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4>Pre Order</h4>
+                  <h4>Rekap Penjualan</h4>
                   <table class="table">
                     <tr>
-                      <td>No</td>
-                      <td>Kode PO</td>
-                      <td>Total</td>
+                      <th>No</th>
+                      <th>Nama</th>
+                      <th>Kode PO</th>
+                      <th>Total</th>
+                      <th>Detail</th>
                     </tr>
                     <?php
                       $no=1;
@@ -140,14 +140,56 @@
                         
                       <tr>
                         <td><?php echo $no ?></td>
+                        <td><?php echo $key->nama_customer ?></td>
                         <td><?php echo $key->kode_penjualan ?></td>
                         <td> Rp. <?php echo number_format($key->total_harga); ?></td>
+                        <td><a href="<?php echo base_url('Index/Penjualan/').$key->id_penjualan ?>">Lihat</a></td>
                       </tr>
 
                       <?php 
                       $no++;
                       endforeach ?>
                    
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4>Detail Barang</h4>
+                  <table class="table">
+                    <tr>
+                      <td>No</td>
+                      <td>Barang</td>
+                      <td>Harga</td>
+                      <td>Qty</td>
+                      <td>Sub Total</td>
+                    </tr>
+                    <?php
+                      $no=1;
+                      if(isset($po_detail)){
+                        foreach ($po_detail->result() as $key): ?>
+                          
+                        <tr>
+                          <td><?php echo $no ?></td>
+                          <td><?php echo $key->nama_barang ?></td>
+                          <td><?php echo number_format ($key->harga) ?></td>
+                          <td><?php echo $key->qty ?></td>
+                          <td>
+                           <?php 
+                              $sub_total = $key->qty * $key->harga;
+                              echo number_format ($sub_total);
+                            ?>
+                          </td>
+                        </tr>
+
+                        <?php 
+                        $no++;
+                        endforeach; 
+                        }
+                    ?>
                   </table>
                 </div>
               </div>

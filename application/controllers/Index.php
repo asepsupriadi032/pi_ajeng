@@ -146,7 +146,7 @@ class Index extends CI_Controller {
 		redirect(base_url('index/po'));
 	}
 
-	public function penjualan(){
+	public function penjualan($id_penjualan = NULL){
 		$id_toko =  $this->session->userdata('id');
 		$barang['user']=$this->db->get('customer');
 
@@ -154,6 +154,12 @@ class Index extends CI_Controller {
 		$this->db->where('barang_toko.id_toko', $id_toko);
 		$this->db->join('barang_toko','barang_toko.id_barang=barang.id_barang');
 		$barang['brg']=$this->db->get('barang');
+
+		if(!empty($id_penjualan)){
+			$this->db->where('penjualan_detail.id_penjualan',$id_penjualan);
+			$this->db->join('barang','barang.id_barang=penjualan_detail.id_barang');
+			$barang['po_detail'] = $this->db->get('penjualan_detail');
+		}
 
 		$barang['penjualan']=$this->db->get('penjualan');
 		$this->load->view('user/penjualan',$barang);
@@ -166,10 +172,10 @@ class Index extends CI_Controller {
 	}
 
 	public function cart_customer(){
-		$this->db->select('barang_toko.harga');
+		$this->db->select('barang_toko.*, barang.nama_barang');
 		$this->db->join('barang_toko','barang_toko.id_barang=barang.id_barang');
 		$row=$this->db->get_where("barang",array('barang_toko.id_barang'=>$this->input->post('id_barang'), 'barang_toko.id_toko'=>$this->session->userdata('id')))->row();
-		var_dump($row); die();
+		// var_dump($row); die();
 
 		$harga=$row->harga;
 
@@ -178,16 +184,37 @@ class Index extends CI_Controller {
 			'qty'=>$this->input->post("qty"),
 			'price'=>$harga,
 			'name'=>$row->nama_barang,
-			'options'=>array('nama_customer'=>$this->input->post('id_customer'))
+			'options'=>array('nama_customer'=>$this->input->post('nama_customer'))
 		);
 		$this->cart->insert($data);
 		// print_r($this->cart->contents());
 		// die();
+		$stokBaru = $row->stok - $this->input->post("qty");
+
+		$this->db->set('stok', $stokBaru);
+		$this->db->where('id_toko',$this->session->userdata('id'));
+		$this->db->where('id_barang',$this->input->post('id_barang'));
+		$this->db->update('barang_toko');
+
 
 		redirect (base_url('index/penjualan'));
 	
 	}
 	public function hapus_cart_penjualan(){
+		foreach ($this->cart->contents() as $key) {
+			$qty = $key['qty'];
+			$id = $key['id'];
+
+			$row = $this->db->get_where('barang_toko',array('id_toko'=>$this->session->userdata('id'), 'id_barang'=>$id))->row();
+
+			$stokBaru = $row->stok + $qty;
+
+			$this->db->where('id_barang',$id);
+			$this->db->where('id_toko',$this->session->userdata('id'));
+			$this->db->set('stok',$stokBaru);
+			$this->db->update('barang_toko');
+		}
+
 		$id=$this->input->post('id',true);
 		$data=array(
 					'rowid'=>$id,
@@ -205,7 +232,7 @@ class Index extends CI_Controller {
 		// echo $code;die();
 		$data=array('id_toko'=>$this->input->post('id_toko'),
 					'kode_penjualan'=>$code,
-					'id_customer'=>$this->input->post('id_customer'),
+					'nama_customer'=>$this->input->post('id_customer'),
 					'total_harga'=>$this->cart->total()
 				);
 
@@ -224,24 +251,11 @@ class Index extends CI_Controller {
 			));
 
 
-			$barang=$this->db->get_where('barang_toko',array('id_toko'=>$this->session->userdata('id')));
-			foreach ($barang->result() as $key ) {
-				if ($key->id_barang == $items['id']) {
-
-					$stok_baru= $key->stok - $items['qty'];
-
-					$this->db->where('id_toko',$this->session->userdata('id'));
-					$this->db->where('id_barang',$key->id_barang);
-					$this->db->update('barang_toko',array('stok'=>$stok_baru));
-					// echo "$stok_baru | ";
-				}
-				$data=array(
-					'rowid'=>$items['rowid'],
-					'qty'=>0
-				);
-				$this->cart->update($data);
-			}
+			
 		}
+
+        $this->session->unset_userdata('nama_customer');
+        $this->cart->destroy();
 			// die();
 		redirect (base_url('index/penjualan'));
 	}
