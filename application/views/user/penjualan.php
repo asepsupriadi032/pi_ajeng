@@ -1,4 +1,9 @@
 <?php $this->load->view('user/header') ?>
+<style type="text/css">
+  input[type=number]{
+    padding: 5px;
+  }
+</style>
         <div class="content-wrapper">
           <div class="page-header">
             <h3 class="page-title">
@@ -22,21 +27,21 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Tambah Order Penjualan</h4>
-                  <form class="forms-sample" method="post" action="<?php echo base_url("index/cart_customer") ?>">
-                    <input type="hidden" name="id_toko" value="<?php echo $this->session->userdata("id") ?>">
+                  <?php if(empty($this->session->userdata('nama_customer'))){ ?>
+                  <form class="forms-sample" method="post" action="<?php echo base_url("Index/addcustomer") ?>">
                     <div class="form-group">
                       <label for="exampleInputUsername1">Nama Customer</label>
-                      <select name="id_customer" class="form-control">
+                      <input type="text" name="nama_customer" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <input type="submit" name="" value="Add" class="btn btn-primary">
+                    </div>
 
-                        <option value="">Pilih Customer</option>
-
-                        <?php  
-                          foreach ($user->result() as $key) {
-                        ?>
-                          <option value="<?php echo $key->id_customer ?>"><?php echo $key->nama_customer ?></option>
-                        
-                        <?php } ?>
-                      </select>
+                  </form>
+                  <?php }else{?>
+                  <form action="<?php echo base_url('Index/cart_customer') ?>" method="post">
+                    <div class="form-group">
+                      <input type="text" name="nama_customer" class="form-control" value="<?php echo $this->session->userdata('nama_customer') ?>" readonly>
                     </div>
                     <div class="form-group">
                       <label for="exampleInputUsername1">Nama Barang</label>
@@ -56,6 +61,7 @@
                     </div> 
                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                   </form>
+                  <?php } ?>
                 </div>
               </div>
             </div>

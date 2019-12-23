@@ -163,6 +163,7 @@ class Penjualan extends Super
                 $this->db->set('id_barang',$items['id']);
                 $this->db->set('id_toko',$this->input->post('id_penerima'));
                 $this->db->set('stok',$items['qty']);
+                $this->db->set('harga',$items['price']);
                 $this->db->insert('barang_toko');
             }else{
                 foreach ($barang->result() as $key ) {
@@ -172,6 +173,7 @@ class Penjualan extends Super
                         $this->db->where('id_toko',$this->input->post('id_penerima'));
                         $this->db->where('id_barang',$key->id_barang);
                         $this->db->set('stok',$stok_baru);
+                        $this->db->set('harga',$items['price']);
                         $this->db->update('barang_toko');
                     }
                 }

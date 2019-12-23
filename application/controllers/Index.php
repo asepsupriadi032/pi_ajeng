@@ -147,26 +147,38 @@ class Index extends CI_Controller {
 	}
 
 	public function penjualan(){
+		$id_toko =  $this->session->userdata('id');
 		$barang['user']=$this->db->get('customer');
+
+		$this->db->select('barang.*');
+		$this->db->where('barang_toko.id_toko', $id_toko);
+		$this->db->join('barang_toko','barang_toko.id_barang=barang.id_barang');
 		$barang['brg']=$this->db->get('barang');
+
 		$barang['penjualan']=$this->db->get('penjualan');
 		$this->load->view('user/penjualan',$barang);
 	}
 
-	public function cart_customer(){
-		$row=$this->db->get_where("barang",array('id_barang'=>$this->input->post('id_barang')))->row();
-		$customer=$this->db->get_where('customer',array('id_customer'=>$this->input->post('id_customer')))->row();
+	public function addcustomer(){
+		$this->session->set_userdata('nama_customer',$this->input->post('nama_customer'));
 
-		$untung=$row->harga *10/100;
-		$harga=$row->harga + $untung;
+		redirect(base_url('Index/penjualan'));
+	}
+
+	public function cart_customer(){
+		$this->db->select('barang_toko.harga');
+		$this->db->join('barang_toko','barang_toko.id_barang=barang.id_barang');
+		$row=$this->db->get_where("barang",array('barang_toko.id_barang'=>$this->input->post('id_barang'), 'barang_toko.id_toko'=>$this->session->userdata('id')))->row();
+		var_dump($row); die();
+
+		$harga=$row->harga;
 
 		$data=array(
 			'id'=>$row->id_barang,
 			'qty'=>$this->input->post("qty"),
 			'price'=>$harga,
 			'name'=>$row->nama_barang,
-			'options'=>array('id_customer'=>$customer->id_customer,
-							'nama'=>$customer->nama_customer)
+			'options'=>array('nama_customer'=>$this->input->post('id_customer'))
 		);
 		$this->cart->insert($data);
 		// print_r($this->cart->contents());
@@ -235,9 +247,22 @@ class Index extends CI_Controller {
 	}
 
 	public function gudang(){
+		$this->db->select('barang_toko.*, barang.nama_barang');
 		$this->db->join('barang','barang.id_barang=barang_toko.id_barang');
 		$barang['brg']=$this->db->get_where('barang_toko',array('id_toko'=>$this->session->userdata('id')));
+		// var_dump($barang); die();
 		$this->load->view('user/gudang',$barang);
+	}
+
+	public function UpdateHarga(){
+		$id_barangtoko = $this->input->post('id_barangtoko');
+		$harga = $this->input->post('harga');
+
+		$this->db->where('id_barangtoko',$id_barangtoko);
+		$this->db->set('harga',$harga);
+		$this->db->update('barang_toko');
+
+		redirect(base_url('Index/gudang'));
 	}
 
 
