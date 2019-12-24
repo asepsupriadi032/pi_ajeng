@@ -38,7 +38,7 @@
                         <td><?php echo $no ?></td>
                         <td><?php echo $key->nama_barang ?></td>
                         <td><?php 
-                          if ($key->stok <= 25) {
+                          if ($key->stok <= 5) {
                             echo "<span class='badge badge-pill badge-warning'>". $key->stok ."</span>";
                           }
                           else{
