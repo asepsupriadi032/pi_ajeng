@@ -1,15 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 18, 2019 at 09:40 AM
--- Server version: 10.1.36-MariaDB
--- PHP Version: 5.6.38
+-- Generation Time: Dec 24, 2019 at 09:32 AM
+-- Server version: 10.1.21-MariaDB
+-- PHP Version: 5.6.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -43,7 +41,8 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `email`, `password`, `nama`, `status`, `gambar`, `theme`) VALUES
-(2, 'admin@admin.com', 'admin', 'admin', 1, 'default.png', 'sb_admin');
+(2, 'admin@admin.com', 'admin', 'admin', 1, 'default.png', 'sb_admin'),
+(3, 'admin@admin2.com', 'admin', 'admin kedua', 1, 'default.png', 'sb_admin');
 
 -- --------------------------------------------------------
 
@@ -54,6 +53,7 @@ INSERT INTO `admin` (`id`, `email`, `password`, `nama`, `status`, `gambar`, `the
 CREATE TABLE `barang` (
   `id_barang` int(3) NOT NULL,
   `nama_barang` varchar(30) NOT NULL,
+  `stok` int(4) NOT NULL,
   `harga` int(8) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -61,11 +61,11 @@ CREATE TABLE `barang` (
 -- Dumping data for table `barang`
 --
 
-INSERT INTO `barang` (`id_barang`, `nama_barang`, `harga`) VALUES
-(1, 'sendal', 15000),
-(2, 'sepatu', 150000),
-(3, 'pensil', 26000),
-(4, 'pulpen', 30000);
+INSERT INTO `barang` (`id_barang`, `nama_barang`, `stok`, `harga`) VALUES
+(1, 'sendal', 161, 15000),
+(2, 'sepatu', 15, 150000),
+(3, 'pensil', 966, 26000),
+(4, 'pulpen', 34, 30000);
 
 -- --------------------------------------------------------
 
@@ -78,7 +78,6 @@ CREATE TABLE `barang_toko` (
   `id_barang` int(3) NOT NULL,
   `id_toko` int(5) NOT NULL,
   `stok` int(11) NOT NULL,
-  `min_stok` int(2) NOT NULL,
   `harga` int(8) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -86,12 +85,11 @@ CREATE TABLE `barang_toko` (
 -- Dumping data for table `barang_toko`
 --
 
-INSERT INTO `barang_toko` (`id_barangtoko`, `id_barang`, `id_toko`, `stok`, `min_stok`, `harga`) VALUES
-(1, 3, 1, 5, 5, 26000),
-(2, 4, 1, 0, 5, 30000),
-(3, 1, 1, 2, 5, 15000),
-(4, 2, 1, 21, 5, 150000),
-(5, 4, 2, 10, 5, 2000);
+INSERT INTO `barang_toko` (`id_barangtoko`, `id_barang`, `id_toko`, `stok`, `harga`) VALUES
+(15, 1, 1, 10, 0),
+(16, 1, 2, 26, 17500),
+(17, 2, 2, 15, 80000),
+(18, 3, 2, 17, 26000);
 
 -- --------------------------------------------------------
 
@@ -123,8 +121,9 @@ INSERT INTO `customer` (`id_customer`, `id_toko`, `nama_customer`, `alamat_custo
 
 CREATE TABLE `penjualan` (
   `id_penjualan` int(11) NOT NULL,
-  `id_customer` int(6) NOT NULL,
+  `nama_customer` varchar(25) NOT NULL,
   `id_toko` int(5) NOT NULL,
+  `id_penerima` int(3) NOT NULL,
   `kode_penjualan` char(10) NOT NULL,
   `total_harga` int(8) NOT NULL,
   `waktu` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -134,10 +133,14 @@ CREATE TABLE `penjualan` (
 -- Dumping data for table `penjualan`
 --
 
-INSERT INTO `penjualan` (`id_penjualan`, `id_customer`, `id_toko`, `kode_penjualan`, `total_harga`, `waktu`) VALUES
-(1, 1, 0, '1564994912', 825000, '2019-08-05 08:48:32'),
-(2, 3, 1, '1576573918', 132000, '2019-12-17 09:11:58'),
-(3, 1, 2, '1576576566', 49500, '2019-12-17 09:56:06');
+INSERT INTO `penjualan` (`id_penjualan`, `nama_customer`, `id_toko`, `id_penerima`, `kode_penjualan`, `total_harga`, `waktu`) VALUES
+(30, '', 0, 1, '1576835186', 150000, '2019-12-20 09:46:26'),
+(31, '', 0, 2, '1577080370', 3852000, '2019-12-23 05:52:50'),
+(32, '', 0, 2, '1577080614', 60000, '2019-12-23 05:56:54'),
+(33, '', 0, 2, '1577081228', 75000, '2019-12-23 06:07:08'),
+(34, '', 0, 2, '1577081271', 130000, '2019-12-23 06:07:51'),
+(35, 'Bambang', 2, 0, '1577114125', 175000, '2019-12-23 15:15:25'),
+(36, '', 0, 2, '1577176216', 970000, '2019-12-24 08:30:16');
 
 -- --------------------------------------------------------
 
@@ -159,9 +162,15 @@ CREATE TABLE `penjualan_detail` (
 --
 
 INSERT INTO `penjualan_detail` (`id_pd`, `id_penjualan`, `id_barang`, `qty`, `harga`, `sub_total`) VALUES
-(1, 1, 2, 5, 165000, 825000),
-(2, 2, 1, 8, 16500, 132000),
-(3, 3, 1, 3, 16500, 49500);
+(35, 30, 1, 10, 15000, 150000),
+(36, 31, 1, 6, 15000, 90000),
+(37, 31, 2, 23, 150000, 3450000),
+(38, 31, 3, 12, 26000, 312000),
+(39, 32, 1, 4, 15000, 60000),
+(40, 33, 1, 5, 15000, 75000),
+(41, 34, 3, 5, 26000, 130000),
+(42, 35, 1, 10, 17500, 175000),
+(43, 36, 2, 5, 150000, 750000);
 
 -- --------------------------------------------------------
 
@@ -183,13 +192,14 @@ CREATE TABLE `po` (
 
 INSERT INTO `po` (`id_po`, `id_toko`, `kode_po`, `waktu`, `sts`) VALUES
 (1, 1, '1564673278', '2019-08-01 15:28:33', 'diterima'),
-(2, 0, '1564990343', '2019-08-05 07:32:23', 'sedang dipesan'),
-(3, 1, '1565058447', '2019-08-06 02:28:06', 'diterima'),
-(4, 1, '1566999431', '2019-08-28 13:37:53', 'diterima'),
-(5, 1, '1576573725', '2019-12-17 09:08:45', 'diterima'),
+(3, 1, '1565058447', '2019-12-24 06:38:12', 'sedang dipesan'),
+(4, 1, '1566999431', '2019-12-24 06:38:09', 'sedang dipesan'),
+(5, 1, '1576573725', '2019-12-24 06:38:03', 'sedang dipesan'),
 (6, 1, '1576573848', '2019-12-17 09:10:48', 'diterima'),
 (7, 1, '1576573988', '2019-12-17 09:13:08', 'diterima'),
-(8, 2, '1576575005', '2019-12-17 09:30:05', 'diterima');
+(8, 2, '1576575005', '2019-12-24 07:11:11', 'sedang dikirim'),
+(9, 2, '1577165839', '2019-12-24 05:37:19', 'diterima'),
+(10, 2, '1577166435', '2019-12-24 06:37:55', 'sedang dipesan');
 
 -- --------------------------------------------------------
 
@@ -219,7 +229,10 @@ INSERT INTO `po_detail` (`id_po_detail`, `id_po`, `id_barang`, `qty`) VALUES
 (8, 5, 1, 11),
 (9, 6, 1, 20),
 (10, 7, 3, 5),
-(11, 8, 1, 17);
+(11, 8, 1, 17),
+(12, 9, 1, 2),
+(13, 9, 2, 6),
+(14, 10, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -246,10 +259,10 @@ INSERT INTO `tjm_menu` (`id`, `parent_menu`, `nama_menu`, `url_menu`, `icon`, `u
 (1, 1, 'root', '/', '', 0, 0, 'Admin'),
 (2, 1, 'dashboard', 'admin/dashboard', 'fa fa-fw fa-dashboard', 1, 1, 'Admin'),
 (3, 1, 'User Admin', 'admin/useradmin', 'fa fa-users', 99, 1, 'Admin'),
-(4, 1, 'Tambah Menu', 'admin/menu', 'fa fa-gear', 100, 1, 'Admin'),
+(4, 1, 'Tambah Menu', 'admin/menu', 'fa fa-gear', 100, 0, 'Admin'),
 (30, 1, 'Barang', 'admin/barang', 'glyphicon glyphicon-th-list', 2, 1, 'Admin'),
 (31, 1, 'Toko', 'admin/toko', 'glyphicon glyphicon-home', 3, 1, 'Admin'),
-(32, 1, 'Barang Toko', 'admin/barang_toko', 'glyphicon glyphicon-list-alt', 4, 1, 'Admin'),
+(32, 1, 'Barang Toko', 'admin/barang_toko', 'glyphicon glyphicon-list-alt', 4, 0, 'Admin'),
 (33, 1, 'Pre-Order', 'admin/po', 'glyphicon glyphicon-shopping-cart', 5, 1, 'Admin'),
 (34, 1, 'Penjualan', 'admin/penjualan', 'glyphicon glyphicon-usd', 6, 1, 'Admin');
 
@@ -347,63 +360,52 @@ ALTER TABLE `toko`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `barang`
 --
 ALTER TABLE `barang`
   MODIFY `id_barang` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
 --
 -- AUTO_INCREMENT for table `barang_toko`
 --
 ALTER TABLE `barang_toko`
-  MODIFY `id_barangtoko` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
+  MODIFY `id_barangtoko` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
   MODIFY `id_customer` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
 --
 -- AUTO_INCREMENT for table `penjualan`
 --
 ALTER TABLE `penjualan`
-  MODIFY `id_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
+  MODIFY `id_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 --
 -- AUTO_INCREMENT for table `penjualan_detail`
 --
 ALTER TABLE `penjualan_detail`
-  MODIFY `id_pd` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
+  MODIFY `id_pd` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 --
 -- AUTO_INCREMENT for table `po`
 --
 ALTER TABLE `po`
-  MODIFY `id_po` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
+  MODIFY `id_po` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `po_detail`
 --
 ALTER TABLE `po_detail`
-  MODIFY `id_po_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-
+  MODIFY `id_po_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `tjm_menu`
 --
 ALTER TABLE `tjm_menu`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
-
 --
 -- AUTO_INCREMENT for table `toko`
 --
 ALTER TABLE `toko`
   MODIFY `id_toko` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-COMMIT;
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

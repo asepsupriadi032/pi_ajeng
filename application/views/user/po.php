@@ -1,4 +1,9 @@
 <?php $this->load->view('user/header') ?>
+<style type="text/css">
+  input[type=number]{
+    padding: 5px;
+  }
+</style>
         <div class="content-wrapper">
           <div class="page-header">
             <h3 class="page-title">

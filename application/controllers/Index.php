@@ -72,6 +72,8 @@ class Index extends CI_Controller {
 	public function cart_po(){
 		$row=$this->db->get_where("barang",array('id_barang'=>$this->input->post('id_barang')))->row();
 
+		$stokBaru = $row->stok - $this->input->post('qty');
+
 		$data=array(
 			'id'=>$row->id_barang,
 			'qty'=>$this->input->post("qty"),
@@ -82,6 +84,10 @@ class Index extends CI_Controller {
 		// print_r($this->cart->contents());
 		// die();
 
+		$this->db->where('id_barang',$row->id_barang);
+		$this->db->set('stok',$stokBaru);
+		$this->db->update('barang');
+
 		redirect (base_url('index/po'));
 	
 	}
@@ -89,11 +95,19 @@ class Index extends CI_Controller {
 
 	public function hapus_cart_po(){
 		$id=$this->input->post('id',true);
-		$data=array(
-					'rowid'=>$id,
-					'qty'=>0
-				);
-		$this->cart->update($data);
+
+		$dt = $this->cart->get_item($id);
+		$id_barang = $dt['id'];
+		$stok = $dt['qty'];
+
+		$row = $this->db->get_where('barang',array('id_barang'=>$id_barang))->row();
+		$stokBaru = $row->stok + $stok;
+
+		$this->db->where('id_barang',$id_barang);
+		$this->db->set('stok',$stokBaru);
+		$this->db->update('barang');
+		// echo $id; die();
+		$this->cart->remove($id);
 		redirect (base_url('index/po'));
 	}
 
