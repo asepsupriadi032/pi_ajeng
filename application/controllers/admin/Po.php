@@ -156,7 +156,7 @@ class Po extends Super
 
             if($jumlahBarangToko < 1){
                 $this->db->set('id_barang',$items['id']);
-                $this->db->set('id_toko',$this->input->post('id_penerima'));
+                $this->db->set('id_toko',$id_toko);
                 $this->db->set('stok',$items['qty']);
                 $this->db->set('harga',$items['price']);
                 $this->db->insert('barang_toko');
@@ -165,7 +165,7 @@ class Po extends Super
                     if ($key->id_barang == $items['id']) {
                         $stok_baru= $key->stok + $items['qty'];
 
-                        $this->db->where('id_toko',$this->input->post('id_penerima'));
+                        $this->db->where('id_toko',$id_toko);
                         $this->db->where('id_barang',$key->id_barang);
                         $this->db->set('stok',$stok_baru);
                         $this->db->set('harga',$items['price']);
