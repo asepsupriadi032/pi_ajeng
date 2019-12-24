@@ -1,5 +1,6 @@
 <?php if (empty($this->session->userdata('login_toko'))) {
   redirect(base_url());
+  //banyak error
 } ?>
 <!DOCTYPE html>
 <html lang="en"><base href="<?php echo base_url("assets/user") ?>/">
