@@ -3,6 +3,10 @@
   input[type=number]{
     padding: 5px;
   }
+
+  .kodePenjualan{
+    color: #b66dff;
+  }
 </style>
         <div class="content-wrapper">
           <div class="page-header">
@@ -27,11 +31,11 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Tambah Order Penjualan</h4>
-                  <?php if(empty($this->session->userdata('nama_customer'))){ ?>
+                  <?php if(empty($this->session->userdata('kode_penjualan'))){ ?>
                   <form class="forms-sample" method="post" action="<?php echo base_url("Index/addcustomer") ?>">
                     <div class="form-group">
-                      <label for="exampleInputUsername1">Nama Customer</label>
-                      <input type="text" name="nama_customer" class="form-control">
+                      <label for="exampleInputUsername1">Kode Penjualan</label>
+                      <input type="text" name="kode_penjualan" class="form-control" value="<?php echo time(); ?>" readonly>
                     </div>
                     <div class="form-group">
                       <input type="submit" name="" value="Add" class="btn btn-primary">
@@ -41,7 +45,7 @@
                   <?php }else{?>
                   <form action="<?php echo base_url('Index/cart_customer') ?>" method="post">
                     <div class="form-group">
-                      <input type="text" name="nama_customer" class="form-control" value="<?php echo $this->session->userdata('nama_customer') ?>" readonly>
+                      <input type="text" name="kode_penjualan" class="form-control" value="<?php echo $this->session->userdata('kode_penjualan') ?>" readonly>
                     </div>
                     <div class="form-group">
                       <label for="exampleInputUsername1">Nama Barang</label>
@@ -85,7 +89,7 @@
                        
                     <tr>
                       <td><?php echo $no ?></td>
-                      <td><?php echo $item["options"]["nama_customer"] ?></td>
+                      <td><?php echo $item["kode_penjualan"] ?></td>
                       <td><?php echo $item["name"] ?></td>
                       <td><?php echo number_format ($item["price"]) ?></td>
                       <td><?php echo $item["qty"] ?></td>
@@ -110,7 +114,7 @@
                       <td>
                         <form method="post" action="<?php echo base_url("index/proses_penjualan") ?>">
                           <input type="hidden" name="id_toko" value="<?php echo $this->session->userdata("id") ?>">
-                          <input type="hidden" name="id_customer" value="<?php echo $this->session->userdata('nama_customer') ?>">
+                          <input type="hidden" name="kode_penjualan" value="<?php echo $this->session->userdata('kode_penjualan') ?>">
                           <button type="submit" class="btn btn-gradient-primary mr-2">order</button>
                         </form>
                       </td>
@@ -129,8 +133,7 @@
                   <table class="table">
                     <tr>
                       <th>No</th>
-                      <th>Nama</th>
-                      <th>Kode PO</th>
+                      <th>Kode Penjualan</th>
                       <th>Total</th>
                       <th>Detail</th>
                     </tr>
@@ -140,7 +143,6 @@
                         
                       <tr>
                         <td><?php echo $no ?></td>
-                        <td><?php echo $key->nama_customer ?></td>
                         <td><?php echo $key->kode_penjualan ?></td>
                         <td> Rp. <?php echo number_format($key->total_harga); ?></td>
                         <td><a href="<?php echo base_url('Index/Penjualan/').$key->id_penjualan ?>">Lihat</a></td>
@@ -158,7 +160,7 @@
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4>Detail Barang</h4>
+                  <h4>Detail Barang <?php echo $kode_penjualan ?></h4>
                   <table class="table">
                     <tr>
                       <td>No</td>
