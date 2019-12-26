@@ -35,7 +35,46 @@
               </div>
             </div>
 
-            
+            <div class="col-md-8 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h3>PO Detail</h3>
+                  <table class="table">
+                    <tr>
+                      <td>No</td>
+                      <td>Nama Barang</td>
+                      <td>Harga</td>
+                      <td>Qty</td>
+                      <td>Sub Total</td>
+                    </tr>
+                    <?php 
+                    $no=1;
+                    $total = 0;
+                    foreach ($detail as $key): ?>
+                    <tr>
+                      <td><?php echo $no ?></td>
+                      <td><?php echo $key->nama_barang ?></td>
+                      <td><?php echo number_format ($key->harga) ?></td>
+                      <td><?php echo $key->qty ?></td>
+                      <td><?php echo number_format ($key->harga * $key->qty) ?></td>
+                    </tr>
+
+                    <?php 
+                    $total = $total + ($key->harga * $key->qty);
+                    $no++;
+                    // $id_customer =  $item["options"]["id_customer"];
+                    endforeach; ?>
+                    <tr>
+                      <td colspan="4"></td>
+                      <td>
+                        Total : <?php echo number_format($total)  ?>
+                      </td>
+                      
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
 
 

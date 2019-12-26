@@ -18,7 +18,7 @@ class Po extends Super
         $this->field_edit     = array(); 
         $this->field_tampil   = array(); 
         $this->folder_upload  = 'assets/uploads/files';
-        $this->add            = true;
+        $this->add            = false;
         $this->edit           = true;
         $this->delete         = false;
         $this->crud;
@@ -79,6 +79,10 @@ class Po extends Super
         $this->db->join('toko','toko.id_toko=po.id_toko');
         $data['toko'] = $this->db->get('po')->row();
 
+        $this->db->where('id_po',$id);
+        $this->db->join('barang','barang.id_barang=po_detail.id_barang');
+        $data['detail'] = $this->db->get('po_detail')->result();
+
         $data['page'] = "edit-po";
         $data['output'] = $this->crud->render();
         $this->load->view('admin/'.$this->session->userdata('theme').'/v_index',$data);
@@ -127,7 +131,7 @@ class Po extends Super
         }
 
         $code=time();
-        // var_dump($_POST); die();
+        // var_dump($id_toko); die();
         // echo $code;die();
         $data=array('id_toko'=> '0',
                     'kode_penjualan'=>$code,
@@ -150,29 +154,28 @@ class Po extends Super
             ));
 
 
-            $barang=$this->db->get_where('barang_toko',array('id_toko'=>$this->input->post('id_penerima'), 'id_barang'=>$items['id']));
+            // $barang=$this->db->get_where('barang_toko',array('id_toko'=>$id_toko, 'id_barang'=>$items['id']));
 
-            $jumlahBarangToko = $barang->num_rows();
+            // $jumlahBarangToko = $barang->num_rows();
 
-            if($jumlahBarangToko < 1){
-                $this->db->set('id_barang',$items['id']);
-                $this->db->set('id_toko',$id_toko);
-                $this->db->set('stok',$items['qty']);
-                $this->db->set('harga',$items['price']);
-                $this->db->insert('barang_toko');
-            }else{
-                foreach ($barang->result() as $key ) {
-                    if ($key->id_barang == $items['id']) {
-                        $stok_baru= $key->stok + $items['qty'];
+            // // echo $jumlahBarangToko; die();
+            // if($jumlahBarangToko < 1){
+            //     $this->db->set('id_barang',$items['id']);
+            //     $this->db->set('id_toko',$id_toko);
+            //     $this->db->set('stok',$items['qty']);
+            //     $this->db->set('harga',$items['price']);
+            //     $this->db->insert('barang_toko');
+            // }else{
+            //     $getBarang = $barang->row();
+            //     $id_barang = $getBarang->id_barang;
+            //     $stok_baru= $getBarang->stok + $items['qty'];
 
-                        $this->db->where('id_toko',$id_toko);
-                        $this->db->where('id_barang',$key->id_barang);
-                        $this->db->set('stok',$stok_baru);
-                        $this->db->set('harga',$items['price']);
-                        $this->db->update('barang_toko');
-                    }
-                }
-            }
+            //     $this->db->where('id_toko',$id_toko);
+            //     $this->db->where('id_barang',$id_barang);
+            //     $this->db->set('stok',$stok_baru);
+            //     $this->db->set('harga',$items['price']);
+            //     $this->db->update('barang_toko');
+            // }
 
                            
         }
@@ -182,7 +185,7 @@ class Po extends Super
         $this->db->update('po');
         redirect(base_url('admin/Po'));
 
-        var_dump($this->cart->contents());
-        die();
+        // var_dump($this->cart->contents());
+        // die();
     }
 }

@@ -106,6 +106,7 @@ class Penjualan extends Super
             'options'=>array('nama'=>$nama_toko)
         );
         $this->cart->insert($data);
+
         redirect(base_url('admin/Penjualan/addPenjualan'));
     }
 
@@ -119,11 +120,8 @@ class Penjualan extends Super
 
     public function hapus_cart_penjualan(){
         $id=$this->input->post('id',true);
-        $data=array(
-                    'rowid'=>$id,
-                    'qty'=>0
-                );
-        $this->cart->update($data);
+
+        $this->cart->remove($id);
         redirect(base_url('admin/Penjualan/addPenjualan'));
     }
 
