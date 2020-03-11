@@ -60,7 +60,7 @@
                   <table class="table">
                     <tr>
                       <td>No</td>
-                      <td>Nama Customer</td>
+                      <!-- <td>Nama Customer</td> -->
                       <td>Nama Barang</td>
                       <td>Harga</td>
                       <td>Qty</td>
@@ -73,7 +73,7 @@
                        
                     <tr>
                       <td><?php echo $no ?></td>
-                      <td><?php echo $item["options"]["nama"] ?></td>
+                      <!-- <td><?php echo $item["options"]["nama"] ?></td> -->
                       <td><?php echo $item["name"] ?></td>
                       <td><?php echo number_format ($item["price"]) ?></td>
                       <td><?php echo $item["qty"] ?></td>

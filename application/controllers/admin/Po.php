@@ -93,7 +93,7 @@ class Po extends Super
         $id_toko = $this->input->post('id_toko');
         $id_po = $this->input->post('id_po');
         $sts = $this->input->post('sts');
-
+        // var_dump($sts); die();
         $poDetail = $this->db->get_where('po_detail', array('id_po'=>$id_po))->result();
 
         foreach ($poDetail as $key) {
@@ -111,15 +111,18 @@ class Po extends Super
            $this->db->update('barang');
 
            //update stok barang di toko
-           $this->db->where('id_toko',$id_toko);
-           $this->db->where('id_barang',$id_barang);
-           $barangToko = $this->db->get('barang_toko')->row();
-           $stokBarangTokoBaru = $barangToko->stok + $qty;
+           if($sts == 'diterima'){
+                $this->db->where('id_toko',$id_toko);
+                $this->db->where('id_barang',$id_barang);
+               $barangToko = $this->db->get('barang_toko')->row();
+               $stokBarangTokoBaru = $barangToko->stok + $qty;
 
-           $this->db->where('id_toko',$id_toko);
-           $this->db->where('id_barang',$id_barang);
-           $this->db->set('stok',$stokBarangTokoBaru);
-           $this->db->update('barang_toko');
+               $this->db->where('id_toko',$id_toko);
+               $this->db->where('id_barang',$id_barang);
+               $this->db->set('stok',$stokBarangTokoBaru);
+               $this->db->update('barang_toko');
+           }
+               
 
            $data=array(
             'id'=>$id_barang,

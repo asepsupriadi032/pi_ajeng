@@ -61,6 +61,7 @@
                     <tr>
                       <td>No</td>
                       <td>Nama Barang</td>
+                      <td>Harga @</td>
                       <td>Qty</td>
                       <td>Aksi</td>
                     </tr>
@@ -71,6 +72,7 @@
                     <tr>
                       <td><?php echo $no ?></td>
                       <td><?php echo $item["name"] ?></td>
+                      <td><?php echo $item["price"] ?></td>
                       <td><?php echo $item["qty"] ?></td>
                       <td>
                         <form method="post" action="<?php echo base_url("index/hapus_cart_po") ?>">

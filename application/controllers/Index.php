@@ -136,20 +136,75 @@ class Index extends CI_Controller {
 	}
 
 	public function update_po($id_toko,$po){
+		// var_dump($id_toko); die();
 		// id_barang di ambil dari barang_toko
-		$barang=$this->db->get_where('barang_toko',array('id_toko'=>$id_toko));
-		foreach ($barang->result() as $key ) {
-			$po_detail=$this->db->get_where('po_detail',array('id_po'=>$po));
-			foreach ($po_detail->result() as $v) {
-				if ($key->id_barang == $v->id_barang) {
-					$stok_baru= $key->stok + $v->qty;
+		$this->db->select('barang.harga, po_detail.*');
+		$this->db->join('barang','barang.id_barang=po_detail.id_barang');
+		$po_detail=$this->db->get_where('po_detail',array('id_po'=>$po));
 
-					$this->db->where('id_toko',$id_toko);
-					$this->db->where('id_barang',$key->id_barang);
-					$this->db->update('barang_toko',array('stok'=>$stok_baru));
-				}
+		foreach ($po_detail->result() as $key) {
+			
+			$this->db->where('id_toko',$id_toko);
+			$this->db->where('id_barang',$key->id_barang);
+			$barang_toko = $this->db->get('barang_toko');
+			$toko = $barang_toko->row();
+
+			if(!empty($barang_toko->num_rows())){
+				$stok_baru= $toko->stok + $key->qty;
+
+				// var_dump($toko->stok); die();
+
+				$this->db->where('id_toko',$id_toko);
+				$this->db->where('id_barang',$key->id_barang);
+				$this->db->update('barang_toko',array('stok'=>$stok_baru));
+			}else{
+				$this->db->set('id_barang',$key->id_barang);
+				$this->db->set('id_toko',$id_toko);
+				$this->db->set('stok',$key->qty);
+				$this->db->set('harga',$key->harga);
+				$this->db->insert('barang_toko');
 			}
 		}
+		/*$barang=$this->db->get_where('barang_toko',array('id_toko'=>$id_toko));
+		if($barang->num_rows() !=0){
+			foreach ($barang->result() as $key ) {
+
+				$this->db->select('barang.harga, po_detail.*');
+				$this->db->join('barang','barang.id_barang=po_detail.id_barang');
+				$po_detail=$this->db->get_where('po_detail',array('id_po'=>$po));
+				foreach ($po_detail->result() as $v) {
+					if ($key->id_barang == $v->id_barang) {
+						$stok_baru= $key->stok + $v->qty;
+
+						// var_dump($key->stok); die();
+
+						$this->db->where('id_toko',$id_toko);
+						$this->db->where('id_barang',$key->id_barang);
+						$this->db->update('barang_toko',array('stok'=>$stok_baru));
+					}else{
+						$this->db->set('id_barang',$v->id_barang);
+						$this->db->set('id_toko',$id_toko);
+						$this->db->set('harga',$v->harga);
+						$this->db->insert('barang_toko');
+
+					}
+				}
+			}
+		}else{
+			// var_dump("sada"); die();
+			$this->db->select('barang.harga, po_detail.*');
+			$this->db->join('barang','barang.id_barang=po_detail.id_barang');
+			$po_detail=$this->db->get_where('po_detail',array('id_po'=>$po));
+			foreach ($po_detail->result() as $v) {
+
+				$this->db->set('id_barang',$v->id_barang);
+				$this->db->set('id_toko',$id_toko);
+				$this->db->set('stok',$v->qty);
+				$this->db->set('harga',$v->harga);
+				$this->db->insert('barang_toko');
+			}	
+		}*/
+		
 		$this->db->where('id_po',$po);
 		$this->db->update('po',array('sts'=>'diterima'));
 
