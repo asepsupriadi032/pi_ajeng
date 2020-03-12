@@ -25,6 +25,11 @@ class Penjualan extends Super
     }
 
     function index(){
+
+
+        $this->session->unset_userdata('id_toko');
+        $this->session->unset_userdata('nama_toko');
+
             $data = [];
             /** Bagian GROCERY CRUD USER**/
             if($this->crud->getState()=="add")
@@ -39,6 +44,7 @@ class Penjualan extends Super
             // $this->crud->set_field_upload('nama_field_upload',$this->folder_upload);  
             
             /** Ubah Nama yang akan ditampilkan**/
+            $this->crud->display_as('id_penerima','Pembeli');
             // $this->crud->display_as('nama','Nama Setelah di Edit')
             //     ->display_as('email','Email Setelah di Edit'); 
             
@@ -68,6 +74,7 @@ class Penjualan extends Super
     }
 
     public function addPenjualan(){
+
         $data = [];
         $data = array_merge($data,$this->generateBreadcumbs());
         $data = array_merge($data,$this->generateData());
@@ -98,6 +105,13 @@ class Penjualan extends Super
 
         $row=$this->db->get_where("barang",array('id_barang'=>$id_barang))->row();
         $harga=$row->harga;
+        $sisaStok = $row->stok - $qty;
+        if ($sisaStok < 0) {
+            $this->session->set_userdata('alert',true);
+            $this->session->set_userdata('nama_barang',$row->nama_barang);
+            redirect(base_url('admin/Penjualan/addPenjualan'));
+        }
+
         $data=array(
             'id'=>$row->id_barang,
             'qty'=>$qty,

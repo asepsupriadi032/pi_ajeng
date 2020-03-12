@@ -124,13 +124,13 @@ class Po extends Super
            }
                
 
-           $data=array(
-            'id'=>$id_barang,
-            'qty'=>$qty,
-            'price'=>$harga,
-            'name'=>$nama_barang
-            );
-            $this->cart->insert($data);
+           // $data=array(
+           //  'id'=>$id_barang,
+           //  'qty'=>$qty,
+           //  'price'=>$harga,
+           //  'name'=>$nama_barang
+           //  );
+           //  $this->cart->insert($data);
         }
 
         $code=time();

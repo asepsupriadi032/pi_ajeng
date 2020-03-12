@@ -54,8 +54,23 @@
               </div>
             </div>
             <div class="col-md-8 grid-margin stretch-card">
+
               <div class="card">
                 <div class="card-body">
+                <!-- alert -->
+                <?php if(!empty($this->session->userdata('alert'))){ ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <strong>Maaf!</strong> Stok barang <b><?php echo $this->session->userdata('nama_barang'); ?></b> tidak cukup.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <?php 
+                  }
+                  $this->session->unset_userdata('alert');
+                  $this->session->unset_userdata('nama_barang');
+                ?>
+                <!-- alert -->
                   <h3>Order List</h3>
                   <table class="table">
                     <tr>

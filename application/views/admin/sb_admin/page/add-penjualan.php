@@ -18,7 +18,7 @@
                         
                         <?php } ?>
                       </select>
-                      <input type="submit" name="" value="Pilih" class="mr-2">
+                      <input type="submit" name="" value="Pilih" class="btn btn-gradient-primary mr-2">
                     </form>
                     <?php } ?>
                     </div>
@@ -52,8 +52,21 @@
               </div>
             </div>
 
+            
             <?php if(!empty($this->session->userdata('nama_toko'))){?>
             <div class="col-md-8 grid-margin stretch-card">
+            <!-- alert -->
+            <?php if (!empty($this->session->userdata('alert'))) { ?>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+              <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+              <strong>Maaf!</strong> Stok barang <b><?php echo $this->session->userdata('nama_barang'); ?></b> tidak cukup.
+            </div>
+            <?php 
+              } 
+                $this->session->unset_userdata('alert');
+                $this->session->unset_userdata('nama_barang');
+            ?>
+            <!-- alert -->
               <div class="card">
                 <div class="card-body">
                   <h3>Order List</h3>

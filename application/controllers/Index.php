@@ -73,6 +73,12 @@ class Index extends CI_Controller {
 		$row=$this->db->get_where("barang",array('id_barang'=>$this->input->post('id_barang')))->row();
 
 		$stokBaru = $row->stok - $this->input->post('qty');
+		$nama_barang = $row->nama_barang;
+		if ($stokBaru < 0) {
+			$this->session->set_userdata('alert', true);
+			$this->session->set_userdata('nama_barang', $nama_barang);
+			redirect (base_url('index/po'));
+		}
 
 		$data=array(
 			'id'=>$row->id_barang,
@@ -246,9 +252,16 @@ class Index extends CI_Controller {
 		$this->db->select('barang_toko.*, barang.nama_barang');
 		$this->db->join('barang_toko','barang_toko.id_barang=barang.id_barang');
 		$row=$this->db->get_where("barang",array('barang_toko.id_barang'=>$this->input->post('id_barang'), 'barang_toko.id_toko'=>$this->session->userdata('id')))->row();
-		// var_dump($row); die();
 
 		$harga=$row->harga;
+		$jumlahBarang = $row->stok - $this->input->post('qty');
+
+		if($jumlahBarang < 0){
+			// var_dump($row); die();
+			$this->session->set_userdata('alert', true);
+			$this->session->set_userdata('nama_barang', $row->nama_barang);
+			redirect (base_url('index/penjualan'));
+		}
 
 		$data=array(
 			'id'=>$row->id_barang,

@@ -28,9 +28,24 @@
 
           <div class="row">
             <div class="col-md-4 grid-margin stretch-card">
+
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Tambah Order Penjualan</h4>
+                  <!-- alert -->
+                  <?php if(!empty($this->session->userdata('alert'))){ ?>
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Maaf!</strong> Stok barang <b><?php echo $this->session->userdata('nama_barang'); ?></b> tidak cukup.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <?php 
+                    }
+                    $this->session->unset_userdata('alert');
+                    $this->session->unset_userdata('nama_barang');
+                  ?>
+                  <!-- alert -->
                   <?php if(empty($this->session->userdata('kode_penjualan'))){ ?>
                   <form class="forms-sample" method="post" action="<?php echo base_url("Index/addcustomer") ?>">
                     <div class="form-group">
