@@ -3,6 +3,27 @@
   input[type=number]{
     padding: 5px;
   }
+
+  .btn-gradient-primary {
+    background: linear-gradient(to right, #da8cff, #9a55ff);
+    border: 0;
+    -webkit-transition: opacity 0.3s ease;
+    -moz-transition: opacity 0.3s ease;
+    -ms-transition: opacity 0.3s ease;
+    -o-transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease;
+
+    padding: 0.2rem 0.2rem !important;
+  }
+  .btn-info, .btn-danger{
+
+    padding: 0.2rem 0.2rem !important;
+  }
+  .badge-dark {
+    border: 1px solid #3e4b5b;
+    color: #ffffff;
+    padding: 0.2rem 0.2rem !important;
+  }
 </style>
         <div class="content-wrapper">
           <div class="page-header">
@@ -23,7 +44,7 @@
           </div>
 
           <div class="row">
-            <div class="col-md-4 grid-margin stretch-card">
+            <div class="col-md-3 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Tambah Order</h4>
@@ -53,7 +74,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-8 grid-margin stretch-card">
+            <div class="col-md-9 grid-margin stretch-card">
 
               <div class="card">
                 <div class="card-body">
@@ -78,17 +99,20 @@
                       <td>Nama Barang</td>
                       <td>Harga @</td>
                       <td>Qty</td>
+                      <td>Sub Total</td>
                       <td>Aksi</td>
                     </tr>
                     <?php 
                     $no=1;
+                    $total = 0;
                     foreach ($this->cart->contents() as $item): ?>
                        
                     <tr>
                       <td><?php echo $no ?></td>
                       <td><?php echo $item["name"] ?></td>
-                      <td><?php echo $item["price"] ?></td>
+                      <td>Rp. <?php echo number_format($item["price"]); ?></td>
                       <td><?php echo $item["qty"] ?></td>
+                      <td>Rp. <?php echo number_format ($item["subtotal"]) ?></td>
                       <td>
                         <form method="post" action="<?php echo base_url("index/hapus_cart_po") ?>">
                           <input type="hidden" value="<?php echo $item["rowid"] ?>" name="id">
@@ -99,10 +123,13 @@
                     </tr>
 
                     <?php 
+                    $total = $total + $item["subtotal"];
                     $no++;
                     endforeach; ?>
                     <tr>
-                      <td colspan="4" text-align-center>
+                      <td colspan="4" class="text-right"><b>Total</b></td>
+                      <td>Rp. <?php echo number_format($total); ?></td>
+                      <td>
                         <form method="post" action="<?php echo base_url("index/proses_po") ?>">
                           <input type="hidden" name="id_toko" value="<?php echo $this->session->userdata("id") ?>">
                           <button type="submit" class="btn btn-gradient-primary mr-2">order</button>
@@ -123,6 +150,7 @@
                   <table class="table">
                     <tr>
                       <td>No</td>
+                      <td>Tanggal Transaksi</td>
                       <td>Kode PO</td>
                       <td>Aksi</td>
                     </tr>
@@ -132,6 +160,7 @@
                         
                       <tr>
                         <td><?php echo $no ?></td>
+                        <td><?php echo tanggalShow($key->waktu); ?></td>
                         <td><?php echo $key->kode_po ?></td>
                         <td>
                           <?php 
@@ -167,26 +196,27 @@
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4>Detail Barang</h4>
+                  <h4>Detail Barang - <b><?php echo $getPo->kode_po; ?></b></h4>
                   <table class="table">
                     <tr>
                       <td>No</td>
                       <td>Barang</td>
-                      <td>Harga</td>
+                      <td>Harga (@)</td>
                       <td>Qty</td>
                       <td>Sub Total</td>
                     </tr>
                     <?php
                       $no=1;
                       if(isset($po_detail)){
+                        $Total = 0;
                         foreach ($po_detail->result() as $key): ?>
                           
                         <tr>
                           <td><?php echo $no ?></td>
                           <td><?php echo $key->nama_barang ?></td>
-                          <td><?php echo number_format ($key->harga) ?></td>
+                          <td>Rp. <?php echo number_format ($key->harga) ?></td>
                           <td><?php echo $key->qty ?></td>
-                          <td>
+                          <td>Rp. 
                            <?php 
                               $sub_total = $key->qty * $key->harga;
                               echo number_format ($sub_total);
@@ -195,10 +225,15 @@
                         </tr>
 
                         <?php 
+                        $Total = $Total + $sub_total;
                         $no++;
-                        endforeach; 
-                        }
-                    ?>
+                        endforeach;
+                        ?>
+                        <tr>
+                          <td colspan="4" class="text-right"><b>Total</b></td>
+                          <td>Rp. <?php echo number_format($Total); ?></td>
+                        </tr> 
+                        <?php } ?>
                   </table>
                 </div>
               </div>

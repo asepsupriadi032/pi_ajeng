@@ -6,6 +6,8 @@ class Index extends CI_Controller {
 
 	function __construct(){
 		parent::__construct();
+
+		$this->load->helper('waktu');
 	}
 
 	public function index()
@@ -57,6 +59,7 @@ class Index extends CI_Controller {
 	}
 
 	public function po(){
+
 		$barang['po']=$this->db->get_where('po',array( 'id_toko'=>$this->session->userdata('id')));
 		$barang['brg']=$this->db->get('barang');
 		$this->load->view('user/po',$barang);
@@ -65,7 +68,13 @@ class Index extends CI_Controller {
 	public function lihat_po(){
 		$this->db->join('barang','po_detail.id_barang=barang.id_barang');
 		$barang['po_detail']=$this->db->get_where('po_detail',array('id_po'=>$this->input->post('id_po')));
+
+		$this->db->where('id_po', $this->input->post('id_po'));
+		$barang['getPo'] = $this->db->get('po')->row();
+
+		$this->db->order_by('waktu', 'desc');
 		$barang['po']=$this->db->get_where('po',array( 'id_toko'=>$this->session->userdata('id')));
+
 		$barang['brg']=$this->db->get('barang');
 		$this->load->view('user/po',$barang);
 	}

@@ -91,7 +91,7 @@
                   <table class="table">
                     <tr>
                       <td>No</td>
-                      <td>Nama Customer</td>
+                      <td>Kode Penjualan</td>
                       <td>Nama Barang</td>
                       <td>Harga</td>
                       <td>Qty</td>
@@ -180,12 +180,13 @@
                     <tr>
                       <td>No</td>
                       <td>Barang</td>
-                      <td>Harga</td>
+                      <td>Harga (@)</td>
                       <td>Qty</td>
                       <td>Sub Total</td>
                     </tr>
                     <?php
                       $no=1;
+                      $total = 0;
                       if(isset($po_detail)){
                         foreach ($po_detail->result() as $key): ?>
                           
@@ -194,7 +195,7 @@
                           <td><?php echo $key->nama_barang ?></td>
                           <td><?php echo number_format ($key->harga) ?></td>
                           <td><?php echo $key->qty ?></td>
-                          <td>
+                          <td>Rp. 
                            <?php 
                               $sub_total = $key->qty * $key->harga;
                               echo number_format ($sub_total);
@@ -204,9 +205,14 @@
 
                         <?php 
                         $no++;
+                        $total = $total + $sub_total;
                         endforeach; 
-                        }
-                    ?>
+                        ?>
+                        <tr>
+                          <td colspan="4" class="text-right">Total</td>
+                          <td>Rp. <?php echo number_format($total); ?></td>
+                        </tr>
+                        <?php } ?>
                   </table>
                 </div>
               </div>
