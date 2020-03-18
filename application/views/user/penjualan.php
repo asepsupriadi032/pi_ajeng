@@ -148,6 +148,7 @@
                   <table class="table">
                     <tr>
                       <th>No</th>
+                      <th>Tanggal</th>
                       <th>Kode Penjualan</th>
                       <th>Total</th>
                       <th>Detail</th>
@@ -158,6 +159,7 @@
                         
                       <tr>
                         <td><?php echo $no ?></td>
+                        <td><?php echo tanggalShow($key->waktu) ?></td>
                         <td><?php echo $key->kode_penjualan ?></td>
                         <td> Rp. <?php echo number_format($key->total_harga); ?></td>
                         <td><a href="<?php echo base_url('Index/Penjualan/').$key->id_penjualan ?>">Lihat</a></td>
