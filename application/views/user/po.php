@@ -196,7 +196,10 @@
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4>Detail Barang - <b><?php echo $getPo->kode_po; ?></b></h4>
+                  <h4>Detail Barang <b><?php 
+                    if(!empty($getPo->kode_po)){
+                        echo '- '.$getPo->kode_po;
+                    } ?></b></h4>
                   <table class="table">
                     <tr>
                       <td>No</td>
