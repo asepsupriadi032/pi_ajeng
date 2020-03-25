@@ -237,6 +237,7 @@ class Index extends CI_Controller {
 
 		$barang['kode_penjualan'] = "";
 
+
 		if(!empty($id_penjualan)){
 			$this->db->where('penjualan_detail.id_penjualan',$id_penjualan);
 			$this->db->join('barang','barang.id_barang=penjualan_detail.id_barang');
@@ -247,6 +248,7 @@ class Index extends CI_Controller {
 			$barang['kode_penjualan'] = '- <b class="kodePenjualan">'.$row->kode_penjualan.'</b>';
 		}
 
+		$this->db->where('penjualan.id_toko',$id_toko);
 		$barang['penjualan']=$this->db->get('penjualan');
 		$this->load->view('user/penjualan',$barang);
 	}

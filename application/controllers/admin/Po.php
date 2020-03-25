@@ -96,12 +96,14 @@ class Po extends Super
         // var_dump($sts); die();
         $poDetail = $this->db->get_where('po_detail', array('id_po'=>$id_po))->result();
 
+        $totalHarga = 0;
         foreach ($poDetail as $key) {
            $id_barang = $key->id_barang;
            $qty = $key->qty;
            //update stok di tabel barang
            $this->db->where('id_barang',$id_barang);
            $getStokBarang = $this->db->get('barang')->row();
+
            $stokBarangBaru = $getStokBarang->stok - $qty;
            $harga = $getStokBarang->harga;
            $nama_barang = $getStokBarang->nama_barang;
@@ -114,13 +116,13 @@ class Po extends Super
            if($sts == 'diterima'){
                 $this->db->where('id_toko',$id_toko);
                 $this->db->where('id_barang',$id_barang);
-               $barangToko = $this->db->get('barang_toko')->row();
-               $stokBarangTokoBaru = $barangToko->stok + $qty;
+                $barangToko = $this->db->get('barang_toko')->row();
+                $stokBarangTokoBaru = $barangToko->stok + $qty;
 
-               $this->db->where('id_toko',$id_toko);
-               $this->db->where('id_barang',$id_barang);
-               $this->db->set('stok',$stokBarangTokoBaru);
-               $this->db->update('barang_toko');
+                $this->db->where('id_toko',$id_toko);
+                $this->db->where('id_barang',$id_barang);
+                $this->db->set('stok',$stokBarangTokoBaru);
+                $this->db->update('barang_toko');
            }
                
 
@@ -131,15 +133,17 @@ class Po extends Super
            //  'name'=>$nama_barang
            //  );
            //  $this->cart->insert($data);
+           $totalHarga = $totalHarga + ($harga * $qty);
         }
 
         $code=time();
         // var_dump($id_toko); die();
-        // echo $code;die();
+        // echo $totalHarga;die();
         $data=array('id_toko'=> '0',
                     'kode_penjualan'=>$code,
                     'id_penerima'=>$id_toko,
-                    'total_harga'=>$this->cart->total()
+                    // 'total_harga'=>$this->cart->total()
+                    'total_harga'=>$totalHarga
                 );
 
         $this->db->insert('penjualan',$data);
